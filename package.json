@@ -1,0 +1,13 @@
+{
+  "name": "pluginbot",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/service-bot/pluginbot.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ]
+}

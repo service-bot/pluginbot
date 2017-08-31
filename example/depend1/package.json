@@ -1,0 +1,7 @@
+{
+  "name": "depend1",
+  "version": "0.0.1",
+  "main" : "depend1.js",
+  "requires" : ["core"]
+
+}
