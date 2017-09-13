@@ -28,7 +28,7 @@ module.exports = {
 
 
 #### Plugin Interface  
-A plugin consists of a file which can export two functions, start which decides what services a plugin should initially provide
+A plugin consists of a module which can export two functions (neither are required), start which decides what services a plugin should initially provide
 and consumer which decides how to consume services that have been provided by other plugins 
 
 
