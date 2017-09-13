@@ -17,6 +17,8 @@ Install/uninstall and enable/disable in later releases.
 
 
 ```js
+//config.js
+
 //path should be relative to the config file location, can refer to NPM modules as well
 module.exports = {
         plugins: [
@@ -107,7 +109,8 @@ module.exports = {
 In order for a pluginbot plugin to be considered valid it requires a pluginbot 
 section to be defined in the package.json. For a basic definition you just need 
 to define where the entry point to your plugin is and the services the plugin consumes (if any)
-```json
+```js
+//./express-router/package.json
 {
     "name": "express-router",
     "version": "0.0.1",
@@ -122,6 +125,7 @@ to define where the entry point to your plugin is and the services the plugin co
 To start pluginbot on the server, just call createPluginbot and initialize it
 
 ```javascript
+//app.js
 const CONFIG_PATH = "./config.js"
 let path = require("path");
 let Pluginbot = require("pluginbot");
