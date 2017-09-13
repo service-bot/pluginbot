@@ -118,7 +118,21 @@ to define where the entry point to your plugin is and the services the plugin co
     }
 }
 ```
+### Starting Pluginbot
+To start pluginbot on the server, just call createPluginbot and initialize it
 
+```javascript
+const CONFIG_PATH = "./config.js"
+let path = require("path");
+let Pluginbot = require("pluginbot");
+//pass full path to createPluginbot
+Pluginbot.createPluginbot(path.resolve(__dirname, CONFIG_PATH))
+.then(pluginbot => pluginbot.initialize())
+.catch(e => {
+    console.error(e);
+});
+
+```
 
 
 ### Advanced
