@@ -1,5 +1,7 @@
 # Pluginbot 
 
+[![Join the chat at https://gitter.im/service-bot/pluginbot](https://badges.gitter.im/service-bot/pluginbot.svg)](https://gitter.im/service-bot/pluginbot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Lightweight plugin framework for NodeJS with a focus on extensibility.
 
 #### Configuration
