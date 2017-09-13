@@ -105,7 +105,7 @@ module.exports = {
 #### package.json
 In order for a pluginbot plugin to be considered valid it requires a pluginbot 
 section to be defined in the package.json. For a basic definition you just need 
-to define what services your plugin consumes (if any).
+to define where the entry point to your plugin is and the services the plugin consumes (if any)
 ```json
 {
     "name": "express-router",
