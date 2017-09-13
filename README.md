@@ -1,7 +1,8 @@
-#Pluginbot 
+# Pluginbot 
+
 Lightweight plugin framework for NodeJS with a focus on extensibility.
 
-####Configuration
+#### Configuration
 In order for plugins to run, they have to be declared in a configuration 
 which will contain at a minimum the path of the plugin. Here you would define
 environment specific data.
@@ -26,7 +27,7 @@ module.exports = {
 ```
 
 
-####Plugin Interface  
+#### Plugin Interface  
 A plugin consists of a file which can export two functions, start which decides what services a plugin should initially provide
 and consumer which decides how to consume services that have been provided by other plugins 
 
@@ -101,7 +102,7 @@ module.exports = {
 
 
  
-####package.json
+#### package.json
 In order for a pluginbot plugin to be considered valid it requires a pluginbot 
 section to be defined in the package.json. For a basic definition you just need 
 to define what services your plugin consumes (if any).
@@ -119,10 +120,10 @@ to define what services your plugin consumes (if any).
 
 
 
-###Advanced
-#####Requires
-#####Arrays of services
-#####Client
+### Advanced
+##### Requires
+##### Arrays of services
+##### Client
 
 
 ###Credit
