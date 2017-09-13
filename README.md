@@ -1,7 +1,7 @@
 # Pluginbot 
 <img src="https://img.shields.io/badge/stability-experimental-red.svg">[![Gitter](https://badges.gitter.im/service-bot/pluginbot.svg)](https://gitter.im/service-bot/pluginbot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-Lightweight plugin framework for NodeJS - create simple and extensible apps using a service-based architecture.
+Lightweight plugin framework for NodeJS - create extremely extensible apps using a service-based architecture.
 
 #### Configuration
 In order for plugins to run, they have to be declared in a configuration 
