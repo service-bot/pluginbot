@@ -4,8 +4,8 @@ module.exports = {
         return require(path.resolve(configPath, "..", pluginConfig.path, "package.json"));
     },
 
-    buildClientPluginMap(configPath){
-        let config = require(configPath);
+    async buildClientPluginMap(configPath){
+        let config = await require(configPath);
         let pluginConfigs = config.plugins;
         let clientConfigs = pluginConfigs.reduce((acc, plugin) => {
             let pluginPackage = this.getPluginPackage(configPath, plugin)
@@ -17,13 +17,13 @@ module.exports = {
         }, {});
         return clientConfigs;
     },
-    buildClientConfig(configPath){
-        let config = Promise.resolve(require(configPath));
+    async buildClientConfig(configPath){
+        let config = await require(configPath);
         let pluginConfigs = config.plugins;
         let clientConfigs = pluginConfigs.reduce((acc, plugin) => {
             let pluginPackage = this.getPluginPackage(configPath, plugin)
             if (pluginPackage.client) {
-                let pluginClientPath = path.resolve(configPath, "..", plugin.path, pluginPackage.client);
+                let pluginClientPath = path.resolve(configPath, "..", plugin.path, pluginPackage.client.main);
                 acc[pluginPackage.name] = {pluginPackage,clientConfig: plugin.client, path: plugin.path}
             }
             return acc;

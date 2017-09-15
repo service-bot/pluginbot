@@ -102,12 +102,16 @@ class PluginbotBase {
         this.store.dispatch({type : "START_PLUGINBOT"});
 
     }
-    * consume(channel){
-        let action = yield take(channel);
+    consume(channel){
+        return call(this.serviceConsumer, channel)
 
     }
+    * serviceConsumer(channel){
+        let action = yield take(channel);
+        return action.service;
+    }
 
-    * provide(){
+    provide(service){
 
     }
 
@@ -115,6 +119,9 @@ class PluginbotBase {
 
 
 }
+
+
+
 
 module.exports = PluginbotBase;
 
