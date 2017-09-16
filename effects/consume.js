@@ -1,7 +1,7 @@
 let {take, put, actionChannel, all, call} = require("redux-saga/effects");
 
 function consume(channel){
-    return call(this.serviceConsumer, channel)
+    return call(serviceConsumer, channel)
 
 }
 function* serviceConsumer(channel){
