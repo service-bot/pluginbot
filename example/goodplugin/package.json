@@ -1,6 +1,0 @@
-{
-  "name": "goodplugin",
-  "version": "0.0.1",
-  "main" : "goodplugin.js",
-  "requires" : ["depend1", "depend2", "core"]
-}
