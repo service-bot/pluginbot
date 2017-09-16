@@ -13,8 +13,9 @@ class Pluginbot extends PluginbotBase {
         let pluginConfigs = (await configBuilder.buildServerConfig(configPath)).plugins;
         let plugins = {};
         for(let [pluginName, config] of Object.entries(pluginConfigs)){
-            let plugin = require(path.resolve(configPath, "..",  config.path));
-            plugins[pluginName] = new Plugin(plugin, config.pluginPackage, config.config)
+            let pluginPackagePart = config.pluginPackage.pluginbot.server || config.pluginPackage.pluginbot
+            let plugin = require(path.resolve(configPath, "..",  config.path, (config.pluginPackage.pluginbot.main || config.pluginPackage.pluginbot.server.main) ));
+            plugins[pluginName] = new Plugin(plugin, config.pluginPackage, config.config, pluginPackagePart)
         }
 
         return new PluginbotBase(plugins);

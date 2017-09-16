@@ -13,7 +13,7 @@ let pattern = function(serviceType) {
 };
 
 let pluginStartedPattern = function(pluginName) {
-   return function (action) {
+    return function (action) {
         return (action.type == "PLUGIN_ENABLED" && action.plugin.name == pluginName);
     }
 }
@@ -24,14 +24,14 @@ let pluginStartedPattern = function(pluginName) {
 
 module.exports = class Plugin{
 
-    constructor(plugin, pluginPackage, pluginConfig, store){
+    constructor(plugin, pluginPackage, pluginConfig, pluginPackagePart){
         this.name = pluginPackage.name;
         this.pkg = pluginPackage;
         this.plugin = plugin;
         this.config = pluginConfig;
-        this.store = store;
         this.imports = {};
         this.services = {};
+        this.pkgPart = pluginPackagePart;
 
 
     }
@@ -40,16 +40,16 @@ module.exports = class Plugin{
 
         //build channels to consume.
         console.log("INITIAL")
-        if(this.pkg.consumes) {
-            for (let serviceToConsume of this.pkg.consumes) {
+        if(this.pkgPart.consumes) {
+            for (let serviceToConsume of this.pkgPart.consumes) {
                 channels[serviceToConsume] = yield actionChannel(pattern(serviceToConsume));
             }
         }
         yield take("START_PLUGINBOT");
-        if(this.pkg.requires && this.pkg.requires.length > 0){
+        if(this.pkgPart.requires && this.pkgPart.requires.length > 0){
             console.log(this.name + " WAITING FOR DEPENDENCIES...");
             let dependencyEffects = {}
-            for(let dependency of this.pkg.requires){
+            for(let dependency of this.pkgPart.requires){
                 dependencyEffects[dependency] = take(pluginStartedPattern(dependency));
             }
             let dependencies = yield all(dependencyEffects);
