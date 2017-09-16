@@ -1,7 +1,4 @@
 const path = require("path");
-
-//todo: make more DRY
-//todo: clear up pluginbot object place... (and how server/client works)
 module.exports = {
     getPluginPackage(configPath, pluginConfig){
         return require(path.resolve(configPath, "..", pluginConfig.path, "package.json"));
@@ -39,8 +36,9 @@ module.exports = {
         let pluginConfigs = config.plugins;
         let serverConfigs = pluginConfigs.reduce((acc, plugin) => {
             let pluginPackage = this.getPluginPackage(configPath, plugin)
-            if (pluginPackage.main) {
-                let pluginServerPath = path.resolve(configPath, "..", plugin.path, pluginPackage.main);
+            let pluginbot =pluginPackage.pluginbot;
+            if (pluginbot) {
+                let pluginServerPath = path.resolve(configPath, "..", plugin.path, (pluginbot.main || pluginbot.server.main));
                 acc[pluginPackage.name] = {pluginPackage, config : plugin, path: plugin.path}
             }
             return acc;
