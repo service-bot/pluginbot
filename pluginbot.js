@@ -1,7 +1,7 @@
 let path = require("path");
 let Plugin = require("./src/plugin");
 let PluginbotBase = require("./src/pluginbot-base");
-let configBuilder = require("./src/helpers/configBuilder");
+let configBuilder = require("./configBuilder");
 
 class Pluginbot extends PluginbotBase {
     /**
