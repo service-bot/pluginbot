@@ -3,7 +3,7 @@ Lightweight, unopinionated plugin framework - create extremely extensible and sc
 
 <img src="https://img.shields.io/badge/stability-experimental-red.svg">[![Gitter](https://badges.gitter.im/service-bot/pluginbot.svg)](https://gitter.im/service-bot/pluginbot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-####Overview
+### Overview
 At a high level - pluginbot is an app framework that consists of plugins which can provide/consume services. To define a plugin you define functions which provide services and a function that can consume services, consumption happens in the form of a redux-saga so your plugin can wait around for your desired service to be provided which elmiminates complex dependency chains since you just wait around for your desired servies and handle them whenever they come into the pipeline.
 
 This architecture allows for a highly extensible application because a plugin that adds functionality would just provide services other plugins consume (or consume services other plugins provide) - for example a plugin could provide new routes to be consumed by a router plugin (which would be waiting around for new routes to add).
