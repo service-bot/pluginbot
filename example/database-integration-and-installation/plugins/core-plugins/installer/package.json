@@ -1,0 +1,16 @@
+{
+  "name": "installer",
+  "version": "0.0.1",
+  "dependencies": {
+    
+  },
+  "pluginbot" : {
+  "server": {
+    "main" : "installer.js",
+    "consumes": [
+      "pluginInstall", "database"
+    ],
+    "requires" : ["database"]
+  }
+}
+}

@@ -1,0 +1,15 @@
+{
+  "name": "dogs",
+  "version": "0.0.1",
+  "dependencies": {
+    
+  },
+  "pluginbot" : {
+    "client" : {
+      "main" : "dogClient.js"
+    },
+    "server" : {
+      "main" : "dogServer.js"
+    }
+  }
+}

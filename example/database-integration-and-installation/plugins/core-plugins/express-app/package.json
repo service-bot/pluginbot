@@ -1,0 +1,13 @@
+{
+  "name": "express-app",
+  "version": "0.0.1",
+  "dependencies": {
+    
+  },
+  "pluginbot" : {
+    "server" : {
+      "main" : "app.js",
+      "consumes" : ["expressRouter", "baseRouter"]
+    }
+  }
+}

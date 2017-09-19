@@ -1,0 +1,15 @@
+{
+  "name": "cat",
+  "version": "0.0.1",
+  "dependencies": {
+    
+  },
+  "pluginbot" : {
+    "client" : {
+      "main" : "catClient.js"
+    },
+    "server" : {
+      "main" : "catServer.js"
+    }
+  }
+}

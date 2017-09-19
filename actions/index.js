@@ -1,8 +1,7 @@
 module.exports = {
 
-    // provideServices : function(services){
-    //    for( [serviceName, serviceValue] of Object.entries(services)){
-    //
-    //    }
-    // }
+
+        enablePlugin : (plugin) => ({type : "PLUGIN_ENABLED", plugin}),
+        provideService : (serviceType, service, provider) => ({type : "SERVICE_PROVIDED", serviceType, service, provider}),
+
 }
