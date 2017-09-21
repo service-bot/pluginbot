@@ -15,8 +15,7 @@ environment specific data.
 
 Configuration can either be json or a js file that exports an object/Promise that resolves to an object 
 
-The plugins configured here represent the "enabled and installed" plugins - there will be more complex logic regarding
-Install/uninstall and enable/disable in later releases. 
+The plugins array represents the enabled plugins in a pluginbot instance.
 
 
 
@@ -24,85 +23,82 @@ Install/uninstall and enable/disable in later releases.
 ```js
 //config.js
 
-//path should be relative to the config file location, can refer to NPM modules as well
+//path should be relative to the config file location, or absolute, can refer to NPM modules as well
 module.exports = {
         plugins: [
-            {"path": "express-router", "baseUrl" : "/api/v1"},
-            {"path": "./database", "host": "localhost", "port" : 5432, "username" : "admin", "database" : "my_app_db"},
-            {"path": "./server", "port": 3001},
+            {"path": "express-app", "apiBaseUrl" : "/api", "port" : 3001},
+            {"path": "./route-provider", "port": 3001},
             ],
 };
 ```
 
 
 #### Plugin Interface  
-A plugin consists of a module which can export two functions (neither are required), start which decides what services a plugin should initially provide
-and consumer which decides how to consume services that have been provided by other plugins 
-
+A plugin consists of a module which exports a generator function, each plugin takes the form of a [redux-saga](https://redux-saga.js.org/) meaning
+they can wait for specific events to happens or services to be provided by other plugins before running their own code.
 
 ```js
 //router.js
 
 //take used for consumption
-const {take} = require("redux-saga/effects");
+let express = require("express");
+const consume = require("pluginbot/effects/consume");
 module.exports = {
+    //./express-app.js
     /**
-    * This function defines the initial services which a plugin can provide
+    * This function is a saga which can consume or provide services and represents a plugin's lifecycle
     * 
     * @param config {Object.<string, Object.<string, *>>} 
     * - Keys the config option name to the config's value defined in the Pluginbot configuration
     *  
-    * @param imports {Object.<string, Plugin>} 
-    * Keys the required plugins' names to their respective objects (in an initialized state)
-    * 
-    * @returns {Object.<string, *|*[]> | Promise} - Returns an object containing provided services keyed by service name
-    */
-    start : function (config, imports) {
+    * @param provide {function(Object)} -  provide services, key servicename value service, returns effect
+    *
+    * @param services {Object.<string, Channel>} -  
+    * keyed by service name, value is a channel that can be consumed for a service 
+    */    
+    run : function*(config, provide, services){
+        const app = express();
+        const router = express.Router();
         
-        //contrived example - router would not provide its own routes usually...
-        let express = require("express");
-        let Router = express.Router();
-        Router.get("/info", (req, res) => {
-            res.json({"info" : "great info"})
+        app.use(config.apiBaseUrl, router);
+        app.listen(config.port);
+        
+        //provide expressApp and baseRouter which can now be consumed by other plugins
+        yield provide({
+            expressApp: app,
+            baseRouter: router
         });
         
-        Router.get("/something", (req, res) => {
-            res.json({"something" : "great something?"});
-        });
-        
-        //return express route to be consumed by consumer function
-        return {
-            expressRoute: Router
-        }
-    },
-    
-    /**
-    * consumer functions are generator functions which can wait for specific services to be provided and define how 
-    * to consume them as they become available
-    * 
-    * @param config {Object.<string, Object.<string, *>>} 
-    * Keys the config option name to the config's value defined in the Pluginbot configuration
-    * 
-    * @param imports {Object.<string, Plugin>} 
-    * Keys the required plugins' names to their respective objects (in an initialized state)
-    * 
-    * @param services {Object.<string, actionChannel>} an object containing actionChannels for each of the different
-    * services a plugin consumes
-    */
-    
-    consumer : function*(config, imports, services){
-        
-        //take the first expressApp service provided (more logic needed to handle multiple express apps)
-        let action = yield take(services.expressApp);
-        let app = action.service;
+        //loop pauses when it hits a yield
         while(true){
-            //pauses function until new route gets provided
-            let newRouteAction = yield take(services.expressRoute);
-            let newRoute = newRouteAction.service;
-            //apply route to express app
-            app.use(config.basePath, newRoute);
+            //wait around for new expressRouter services to be provided
+            let newRoute = yield consume(services.expressRouter);
             
+            //add new route to the api router
+            router.use(newRoute);
         }
+    }  
+}
+```
+
+Now if I wanted to create a plugin which adds a new route to my app all I need to do is provide an expressRoute service
+
+```javascript
+//route-provider.js
+module.exports = {
+    run : function*(config, provide, services){
+        const router = require("express").Router();
+        
+        //would be called by GET /api/hello-world
+        router.get("/hello-world", (req, res) => {
+            res.json({hello : "world"});
+        });
+                
+        //provide expressRouter to be used by the app's router
+        yield provide({
+            expressRouter: router
+        });
+        
     }
 }
 ```
@@ -115,14 +111,14 @@ In order for a pluginbot plugin to be considered valid it requires a pluginbot
 section to be defined in the package.json. For a basic definition you just need 
 to define where the entry point to your plugin is and the services the plugin consumes (if any)
 ```js
-//./express-router/package.json
+//./express-app/package.json
 {
-    "name": "express-router",
+    "name": "express-app",
     "version": "0.0.1",
     "private": true,
     "pluginbot": {
-        "main" : "router.js", 
-        "consumes": ["expressApp", "expressRoute"]
+        "main" : "express-app.js", 
+        "consumes": ["expressRoute"]
     }
 }
 ```
@@ -145,9 +141,7 @@ Pluginbot.createPluginbot(path.resolve(__dirname, CONFIG_PATH))
 
 
 ### Advanced
-##### Requires
-##### Arrays of services
-##### Clien
+##### Client
 see [pluginbot-react](https://github.com/service-bot/pluginbot-react)
 
 

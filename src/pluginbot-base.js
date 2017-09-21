@@ -23,16 +23,6 @@ class PluginbotBase {
         this.plugins = plugins;
         this.serviceChannels = {};
         this.config = config;
-        // this.pluginHandler = {
-        //     get: function(target, name){
-        //         if(target[name]){
-        //             return target[name];
-        //         }else{
-        //             target[name] = self.enablePlugin(self.getPluginConfig(name));
-        //             return target[name];
-        //         }
-        //     }
-        // }
 
     }
 
@@ -157,12 +147,6 @@ class PluginbotBase {
                 resolve(self.plugins);
 
             });
-            //saga to resolve when all plugins are started
-            // sagaMiddleware.run(function*(){
-            //     let allPluginsStarted = yield all(pluginsStartedSaga);
-            //     console.log("ALL STARTED!");
-            //     resolve(allPluginsStarted);
-            // })
 
             //saga to enable plugins after initialization
             sagaMiddleware.run(function*(){
@@ -172,7 +156,6 @@ class PluginbotBase {
                     if(self.config.enable){
                         let enableChannels = self._getLazyChannels();
                         yield call(self.config.enable, enableChannels, action.plugin.name);
-                        console.log("enablr!");
                     }
                     let pluginTask = yield fork(call, action.plugin.enable.bind(action.plugin), channels);
 
@@ -218,14 +201,6 @@ class PluginbotBase {
 
                 yield call(this.config.install.bind(this), this._getLazyChannels() , pluginName, pluginFunctions.install);
                 console.log("configured install donner!");
-                // let installServices = yield call(pluginFunctions.install, imports);
-                // if(installServices) {
-                //     yield call(Plugin.provideServices, installServices, pluginName);
-                //     yield take(Plugin.pluginInstalledPattern(pluginName))
-                // }else{
-                //     yield put({type: "PLUGIN_INSTALLED", pluginName: pluginName});
-                //
-                // }
             } else if(pluginFunctions.install) {
                 yield call(pluginFunctions.install);
             }

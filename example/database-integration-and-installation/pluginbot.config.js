@@ -60,15 +60,13 @@ let config = async function() {
                 yield call(pluginInstall);
             }
         },
+        //todo : should enable be in charge of running the plugin?
         enable : function*(services, pluginName){
-            console.log("!!!", services, "!!!");
             let db = yield consume(services.database);
             let update = function(){
                 return db(PLUGIN_TABLE).where("name", pluginName).update("enabled", true);
             }
-            console.log(update);
             let res = yield call(update);
-            console.log(res);
         },
         disable : function*(services, pluginName){
             let db = yield consume(services.database);
