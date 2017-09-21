@@ -9,7 +9,7 @@
       "main" : "client.js"
     },
     "server" : {
-      ""
+
       "main" : "server.js"
     }
   }

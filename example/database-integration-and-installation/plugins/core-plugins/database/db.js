@@ -25,11 +25,11 @@
 
 // let consume = require("pluginbot/effects/consume");
 module.exports  = {
-    start : function (config) {
+    run : function* (config, provide) {
         let knex = config.knex;
 
-        return {
+        yield provide( {
             database: knex,
-        }
+        })
     },
 };

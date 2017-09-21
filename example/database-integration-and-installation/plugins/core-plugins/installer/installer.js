@@ -7,9 +7,9 @@ const PLUGIN_TABLE = "plugins";
 //todo: make this cleaner.
 const PLUGIN_FOLDER = path.resolve(__dirname, "../..");
 module.exports = {
-    start : function(config){
+    run : function*(config, provide){
         console.log("YO IM STARTING!");
-        return {"dog" : "BIG"}
+        yield provide({"dog" : "BIG"});
     },
 
     consumer : function*(config, imports, channel){

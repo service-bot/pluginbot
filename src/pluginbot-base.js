@@ -65,6 +65,7 @@ class PluginbotBase {
      * @param middleware - Redux middleware to be applied to internal redux store.
      * @returns {Promise.<void>}
      */
+
     initialize(reducers={}, ...middleware) {
         let self = this;
         return new Promise((resolve, reject) => {
@@ -112,57 +113,74 @@ class PluginbotBase {
             let rootSaga = {};
             let pluginsStartedSaga = {}
             let channels = {};
-
+            console.log("PL");
             for (let [pluginName, plugin] of Object.entries(this.plugins)) {
+                let pluginChannels = {};
                 if(plugin.pkgPart.consumes){
                     plugin.pkgPart.consumes.reduce((acc, serviceToConsume) => {
                         if(!acc[serviceToConsume]){
-                            acc[serviceToConsume] = actionChannel(Plugin.serviceProvidedPattern(serviceToConsume))
+                            pluginChannels[serviceToConsume] = actionChannel(Plugin.serviceProvidedPattern(serviceToConsume))
                         }
                         return acc;
-                    }, channels);
+                    }, pluginChannels);
                 }
 
-                rootSaga[pluginName] = call(plugin.initialize.bind(plugin), resolve);
+                let pluginSaga = function*(consumptionChannels){
+                    console.log("PLUGIN SAGA!");
+                    let enablePlugin = yield call(plugin.enable.bind(plugin), consumptionChannels);
+                    console.log("plugin done?");
+                    return enablePlugin;
+
+                };
+                console.log("HERR!");
+                rootSaga[pluginName] = pluginSaga;
+                channels[pluginName] = all(pluginChannels);
+
                 pluginsStartedSaga[pluginName] = take(Plugin.pluginEnabledPattern(pluginName));
 
             }
-            //saga to store buffer of all services provided
-            sagaMiddleware.run(function*(){
-                let allChannels = yield all(channels);
-                self.serviceChannels = allChannels;
-
-                //todo: add support for unconsumed services that get added.
-            })
+            console.log("DONE HER!");
             //saga to initialize all plugins
             sagaMiddleware.run(function* () {
-                let allPlugins = yield fork(all, rootSaga);
+
+                //start buffering  all service channels
+                let allChannels = yield all(channels);
+                let pluginTasks = {}
+
+                //start enabling all plugins
+                for(let [pluginName, pluginSaga] of Object.entries(rootSaga)){
+                    console.log(pluginName, pluginSaga)
+                    pluginTasks[pluginName] = yield fork(pluginSaga, allChannels[pluginName]);
+                }
+
+                console.log("plugins running")
+                resolve(self.plugins);
 
             });
             //saga to resolve when all plugins are started
-            sagaMiddleware.run(function*(){
-                let allPluginsStarted = yield all(pluginsStartedSaga);
-                console.log("ALL STARTED!");
-                resolve(allPluginsStarted);
-            })
+            // sagaMiddleware.run(function*(){
+            //     let allPluginsStarted = yield all(pluginsStartedSaga);
+            //     console.log("ALL STARTED!");
+            //     resolve(allPluginsStarted);
+            // })
 
-            //saga to get new plugins after installation
+            //saga to enable plugins after initialization
             sagaMiddleware.run(function*(){
                 yield takeEvery("ENABLE_PLUGIN", function*(action){
                     //start the plugin
                     let channels = yield call(self.buildInitialChannels.bind(self), action.plugin.pkgPart.consumes);
                     let pluginTask = yield fork(call, action.plugin.enable.bind(action.plugin), channels);
 
-                    //get the plugin enabled signal
-                    yield put({type: "START_PLUGINBOT"});
+                    //wait the plugin enabled signal
                     let pluginEnabled = yield take(Plugin.pluginEnabledPattern(action.plugin.name));
+
+                    //todo : do we need this still?
                     action.done(pluginEnabled);
                 })
             })
 
 
 
-            this.store.dispatch({type: "START_PLUGINBOT"});
 
 
         })

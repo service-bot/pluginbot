@@ -33,8 +33,6 @@ class Plugin {
         this.plugin = plugin;
         this.config = pluginConfig;
         this.imports = imports;
-        this.services = {};
-        this.channels = {};
         this.pkgPart = pluginPackagePart;
 
 
@@ -48,6 +46,10 @@ class Plugin {
                 yield put(actions.provideService(key, value, provider));
             }
         }
+    }
+
+    *provide(services){
+        Plugin.provideServices(services, this)
     }
 
     //todo: do we need  installation configurations?
@@ -72,54 +74,64 @@ class Plugin {
             done(error);
         }
     }
-    *initialize(){
-        let channels = {}
-
-        //build channels to consume.
-        if(this.pkgPart.consumes) {
-            for (let serviceToConsume of this.pkgPart.consumes) {
-                channels[serviceToConsume] = yield actionChannel(Plugin.serviceProvidedPattern(serviceToConsume));
-            }
-        }
-        this.channels = channels;
-        let imports = {};
-        let dependencyEffects = {}
-        let dependencyChannel = {};
-
-        //todo: clean this part up!
-        if(this.pkgPart.requires && this.pkgPart.requires.length > 0){
-            for(let dependency of this.pkgPart.requires){
-                dependencyEffects[dependency] = take(yield actionChannel(Plugin.pluginEnabledPattern(dependency)));
-            }
-            console.log(this.name, " Dependencies to wait for: ", this.pkgPart.requires);
-            let dependencies = yield all(dependencyEffects);
-
-            for(let [key, value] of Object.entries(dependencies)){
-                imports[key] = value.plugin;
-            }
-
-        }else{
-            yield take("START_PLUGINBOT");
-        }
-
-        yield call(this.enable.bind(this), channels);
-
-
-        return this;
-    }
 
 
     *enable(channels){
-        if(this.plugin.start) {
-            this.services = yield call(this.plugin.start, this.config, this.imports);
-        }
+        // if(this.plugin.start) {
+        //     this.services = yield call(this.plugin.start, this.config, this.imports);
+        // }
         yield put(actions.enablePlugin(this));
         console.log("STARTED PLUGIN! " + this.name);
-        yield call(Plugin.provideServices, this.services, this);
-        if(this.plugin.consumer) {
-            let consume = yield fork(this.plugin.consumer,this.config, this.imports, channels);
+        // yield call(Plugin.provideServices, this.services, this);
+        if(this.plugin.run) {
+            let run = yield fork(this.plugin.run, this.config, this.provide, channels);
         }
     }
+
+
+
+    // *initialize(){
+    //     let channels = {}
+    //
+    //     //build channels to consume.
+    //     if(this.pkgPart.consumes) {
+    //         for (let serviceToConsume of this.pkgPart.consumes) {
+    //             channels[serviceToConsume] = yield actionChannel(Plugin.serviceProvidedPattern(serviceToConsume));
+    //         }
+    //     }
+    //     this.channels = channels;
+    //     let imports = {};
+    //     let dependencyEffects = {}
+    //     let dependencyChannel = {};
+    //
+    //     //todo: clean this part up!
+    //     if(this.pkgPart.requires && this.pkgPart.requires.length > 0){
+    //         for(let dependency of this.pkgPart.requires){
+    //             dependencyEffects[dependency] = take(yield actionChannel(Plugin.pluginEnabledPattern(dependency)));
+    //         }
+    //         console.log(this.name, " Dependencies to wait for: ", this.pkgPart.requires);
+    //         let dependencies = yield all(dependencyEffects);
+    //
+    //         for(let [key, value] of Object.entries(dependencies)){
+    //             imports[key] = value.plugin;
+    //         }
+    //
+    //     }else{
+    //         yield take("START_PLUGINBOT");
+    //     }
+    //
+    //     yield call(this.enable.bind(this), channels);
+    //
+    //
+    //     return this;
+    // }
+
+
+
+
+
+
+
 
 
 }

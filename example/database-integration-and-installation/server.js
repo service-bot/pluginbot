@@ -5,14 +5,16 @@ let Pluginbot = require("../../../pluginbot");
 
 let startPluginbot = async function(){
     console.log("STARTING PLUGINBOT!");
+    try{
     let pb = await Pluginbot.createPluginbot(path.resolve(__dirname, CONFIG_PATH));
     console.log("initializing pluginbot")
-    try{
+
         await pb.initialize()
+        return pb;
+
     }catch(err){
         console.error(err);
     };
-    return pb;
 
 }
 

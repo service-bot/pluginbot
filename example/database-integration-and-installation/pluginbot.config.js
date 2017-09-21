@@ -4,7 +4,6 @@ const DATABASE_NAME = "mydb";
 const DATABASE_PATH = __dirname;
 const PLUGIN_DIRECTORY = "./plugins";
 
-//todo: is it possible to have config take data from inside a plugin? - don't like having db stuff here but it should be ok...
 const knex = require('knex')({
     client: 'sqlite3',
     connection: {
@@ -38,7 +37,15 @@ let config = async function(){
         plugins: [
             ...corePlugins,
             ...pluginConfigs
-        ]
+        ],
+        //install function gets called whenever Pluginbot.prototype.install gets called passing available services
+        //todo: should install be a saga? - it is a problem that it depends on services that may or may not be started
+        install : function(services, pluginToInstall){
+            let db = services.database[0];
+            if(!db){
+                throw "no database has been provided"
+            }
+        }
     }
 };
 
