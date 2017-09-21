@@ -8,8 +8,8 @@ class Pluginbot extends PluginbotBase {
      *
      * @param configPath - absolute path to the configuration
      */
-    constructor(plugins){
-        super(plugins);
+    constructor(plugins, config){
+        super(plugins, config);
     }
     static buildPlugin(pluginPath){
         let pluginPkg = require(path.resolve(pluginPath, "package.json"));
@@ -20,7 +20,6 @@ class Pluginbot extends PluginbotBase {
     }
 
     installPlugin(pluginPath) {
-        console.log("INSTALLIN PLUGIN at ", pluginPath);
         let self = this;
         return new Promise((resolve, reject) => {
             let callback = function(error=null, done=null){
@@ -34,13 +33,14 @@ class Pluginbot extends PluginbotBase {
             let store = this.store;
             let {plugin, pluginPkgPart, pluginPkg, pluginName} = Pluginbot.buildPlugin(pluginPath);
             if(this.plugins[pluginName]){
-                console.warn("plugin " + pluginName + " already installed");
-                return resolve("plugin already installed");
+
+                return resolve("plugin " + pluginName + " already enabled");
             }
-            let imports = this.buildImports(pluginPkgPart);
+            // let imports = this.buildImports(pluginPkgPart);
             console.log("INSTALLING PLUGIN: ", pluginName);
-            //todo : switch this to thunk?
-            this.runSaga(Plugin.install, plugin, pluginName, imports, callback);
+
+            //todo : switch this to thunk instead of callback?
+            this.runSaga(this._install.bind(this), plugin, pluginName, callback);
         })
     }
 
@@ -49,15 +49,16 @@ class Pluginbot extends PluginbotBase {
             return this._enablePlugin(new Plugin(plugin, pluginPkg, config, pluginPkgPart, this.buildImports(pluginPkgPart)));
     }
     static async createPluginbot(configPath){
-        let pluginConfigs = (await configBuilder.buildServerConfig(configPath)).plugins;
+        let config = (await configBuilder.buildServerConfig(configPath));
+        let pluginConfigs = config.plugins;
+        let pluginBotConfig = config.config;
         let plugins = {};
         for(let [pluginName, config] of Object.entries(pluginConfigs)){
             let pluginPackagePart = config.pluginPackage.pluginbot.server || config.pluginPackage.pluginbot
             let plugin = require(path.resolve(configPath, "..",  config.path, (config.pluginPackage.pluginbot.main || config.pluginPackage.pluginbot.server.main) ));
             plugins[pluginName] = new Plugin(plugin, config.pluginPackage, config.config, pluginPackagePart)
         }
-
-        return (new Pluginbot(plugins));
+        return (new Pluginbot(plugins, pluginBotConfig));
 
     }
 

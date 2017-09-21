@@ -1,4 +1,6 @@
 const path = require("path");
+
+//todo: reduce code duplication
 module.exports = {
     getPluginPackage(configPath, pluginConfig){
         return require(path.resolve(configPath, "..", pluginConfig.path, "package.json"));
@@ -29,7 +31,7 @@ module.exports = {
             return acc;
         }, {});
 
-        return {plugins : clientConfigs};
+        return {plugins : clientConfigs, config : config};
     },
     async buildServerConfig(configPath){
         let config = await require(configPath);
@@ -44,7 +46,7 @@ module.exports = {
             return acc;
         }, {});
 
-        return {plugins : serverConfigs};
+        return {plugins : serverConfigs, config : config};
     }
 
 }

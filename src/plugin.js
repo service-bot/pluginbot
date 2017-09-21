@@ -1,10 +1,5 @@
 let {take, put, actionChannel, all, call, fork} = require("redux-saga/effects");
-
-const actions = {
-    enablePlugin : (plugin) => ({type : "PLUGIN_ENABLED", plugin}),
-    provideService : (serviceType, service, provider) => ({type : "SERVICE_PROVIDED", serviceType, service, provider}),
-}
-
+let {enablePlugin, provideService} = require("../actions");
 
 
 class Plugin {
@@ -41,15 +36,16 @@ class Plugin {
     static *provideServices(services, provider){
         for(let [key, value] of Object.entries(services)){
             if(Array.isArray(value)){
-                yield all(value.map(service => put(actions.provideService(key, service, provider))))
+                yield all(value.map(service => put(provideService(key, service, provider))))
             }else {
-                yield put(actions.provideService(key, value, provider));
+                yield put(provideService(key, value, provider));
             }
         }
     }
 
-    *provide(services){
-        Plugin.provideServices(services, this)
+    provide(services){
+
+        return call(Plugin.provideServices, services, this)
     }
 
     //todo: do we need  installation configurations?
@@ -80,7 +76,7 @@ class Plugin {
         // if(this.plugin.start) {
         //     this.services = yield call(this.plugin.start, this.config, this.imports);
         // }
-        yield put(actions.enablePlugin(this));
+        yield put(enablePlugin(this));
         console.log("STARTED PLUGIN! " + this.name);
         // yield call(Plugin.provideServices, this.services, this);
         if(this.plugin.run) {
@@ -104,7 +100,6 @@ class Plugin {
     //     let dependencyEffects = {}
     //     let dependencyChannel = {};
     //
-    //     //todo: clean this part up!
     //     if(this.pkgPart.requires && this.pkgPart.requires.length > 0){
     //         for(let dependency of this.pkgPart.requires){
     //             dependencyEffects[dependency] = take(yield actionChannel(Plugin.pluginEnabledPattern(dependency)));
