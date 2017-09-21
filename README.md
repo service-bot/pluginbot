@@ -22,7 +22,7 @@ The plugins array represents the enabled plugins in a pluginbot instance.
 
 
 ```js
-//config.js
+//./config.js
 
 //path should be relative to the config file location, or absolute, can refer to NPM modules as well
 module.exports = {
@@ -39,13 +39,13 @@ A plugin consists of a module which exports a generator function, each plugin ta
 they can wait for specific events to happens or services to be provided by other plugins before running their own code.
 
 ```js
-//router.js
+
+//./express-app/express-app.js
 
 //take used for consumption
 let express = require("express");
 const consume = require("pluginbot/effects/consume");
 module.exports = {
-    //./express-app.js
     /**
     * This function is a saga which can consume or provide services and represents a plugin's lifecycle
     * 
@@ -85,7 +85,7 @@ module.exports = {
 Now if I wanted to create a plugin which adds a new route to my app all I need to do is provide an expressRoute service
 
 ```javascript
-//route-provider.js
+/./hello-world/hello-world.js
 module.exports = {
     run : function*(config, provide, services){
         const router = require("express").Router();
