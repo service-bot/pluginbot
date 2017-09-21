@@ -85,7 +85,7 @@ module.exports = {
 Now if I wanted to create a plugin which adds a new route to my app all I need to do is provide an expressRoute service
 
 ```javascript
-/./hello-world/hello-world.js
+//./hello-world/hello-world.js
 module.exports = {
     run : function*(config, provide, services){
         const router = require("express").Router();
