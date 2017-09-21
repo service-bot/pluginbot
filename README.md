@@ -22,7 +22,7 @@ The plugins array represents the enabled plugins in a pluginbot instance.
 
 
 ```js
-//./config.js
+// ./config.js
 
 //path should be relative to the config file location, or absolute, can refer to NPM modules as well
 module.exports = {
@@ -40,7 +40,7 @@ they can wait for specific events to happens or services to be provided by other
 
 ```js
 
-//./express-app/express-app.js
+// ./express-app/express-app.js
 
 //take used for consumption
 let express = require("express");
@@ -85,7 +85,7 @@ module.exports = {
 Now if I wanted to create a plugin which adds a new route to my app all I need to do is provide an expressRoute service
 
 ```javascript
-//./hello-world/hello-world.js
+// ./hello-world/hello-world.js
 module.exports = {
     run : function*(config, provide, services){
         const router = require("express").Router();
@@ -112,7 +112,7 @@ In order for a pluginbot plugin to be considered valid it requires a pluginbot
 section to be defined in the package.json. For a basic definition you just need 
 to define where the entry point to your plugin is and the services the plugin consumes (if any)
 ```js
-//./express-app/package.json
+// ./express-app/package.json
 {
     "name": "express-app",
     "version": "0.0.1",
@@ -127,7 +127,7 @@ to define where the entry point to your plugin is and the services the plugin co
 To start pluginbot on the server, just call createPluginbot and initialize it
 
 ```javascript
-//app.js
+// ./app.js
 const CONFIG_PATH = "./config.js"
 let path = require("path");
 let Pluginbot = require("pluginbot");
