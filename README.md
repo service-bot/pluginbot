@@ -1,5 +1,5 @@
 # Pluginbot 
-Lightweight, unopinionated plugin framework - create extremely extensible and scalable apps using a service-based architecture.
+Lightweight, unopinionated plugin framework - create extremely extensible and scalable apps using a service-based architecture and dependency injection.
 
 <img src="https://img.shields.io/badge/stability-experimental-red.svg">[![Gitter](https://badges.gitter.im/service-bot/pluginbot.svg)](https://gitter.im/service-bot/pluginbot?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
