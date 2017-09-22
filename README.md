@@ -140,9 +140,16 @@ Pluginbot.createPluginbot(path.resolve(__dirname, CONFIG_PATH))
 
 ```
 
+ 
+## Advanced (in progress...)
+### Hooks
+#### On Plugin Install
+#### On Plugin Uninstall
+#### On Plugin Enable
+#### On Plugin Disable
 
-### Advanced
-##### Client
+### Consume services with React components
+
 see [pluginbot-react](https://github.com/service-bot/pluginbot-react)
 
 

@@ -1,5 +1,5 @@
 {
-  "name": "cat",
+  "name": "cats",
   "version": "0.0.1",
   "dependencies": {
     
@@ -11,5 +11,6 @@
     "server" : {
       "main" : "catServer.js"
     }
+
   }
 }

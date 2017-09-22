@@ -1,10 +1,10 @@
 import AdoptionPage from "./view/adoption-page.jsx"
-let start = function(config, imports){
+let run = function*(config, provide){
 
-    return {
+    yield provide( {
         topNav : {"path" : "/adoptions", "label" : "Adopt", "page":AdoptionPage}
-    }
+    })
 }
 
-export  {start};
+export  {run};
 

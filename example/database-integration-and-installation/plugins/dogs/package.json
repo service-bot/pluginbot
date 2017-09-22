@@ -11,5 +11,6 @@
     "server" : {
       "main" : "dogServer.js"
     }
+
   }
 }

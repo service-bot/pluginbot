@@ -21,7 +21,7 @@ let corePlugins = [
         "entry": path.resolve(__dirname, "./public/index.html"),
         "staticFiles": path.resolve(__dirname, "./public/")
     },
-    {path: "./plugins/cats"},
+    // {path: "./plugins/cats"},
     // {path: "./plugins/animals/dogs"},
     {path: "./plugins/adoption"},
 
@@ -42,10 +42,7 @@ let config = async function() {
         ],
         //install function gets called whenever Pluginbot.prototype.install gets called passing available services
         install: function* (services, pluginName, pluginInstall) {
-            console.log("!?", services);
-            console.log(services.database);
             let db = yield consume(services.database);
-            console.log("!!!!");
             let trx = function () {
                 db.transaction(async (trx) => {
                     await trx(PLUGIN_TABLE).insert({
@@ -60,7 +57,7 @@ let config = async function() {
                 yield call(pluginInstall);
             }
         },
-        //todo : should enable be in charge of running the plugin?
+        //todo : should enable be in charge of running the plugin like install is in charge of installs?
         enable : function*(services, pluginName){
             let db = yield consume(services.database);
             let update = function(){
@@ -79,4 +76,5 @@ let config = async function() {
 }
 
 //todo : find way of defining plugins through plugins so we don't have to stray of plugin-centric logic
+//todo: allow config to export a function which returns a promise to allow for restart functionality
 module.exports = config();

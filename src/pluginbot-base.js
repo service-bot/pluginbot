@@ -153,7 +153,7 @@ class PluginbotBase {
                 yield takeEvery("ENABLE_PLUGIN", function*(action){
                     //start the plugin
                     let channels = yield call(self.buildInitialChannels.bind(self), action.plugin.pkgPart.consumes);
-                    if(self.config.enable){
+                    if(self.config && self.config.enable){
                         let enableChannels = self._getLazyChannels();
                         yield call(self.config.enable, enableChannels, action.plugin.name);
                     }
