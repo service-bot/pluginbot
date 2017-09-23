@@ -77,4 +77,4 @@ let config = async function() {
 
 //todo : find way of defining plugins through plugins so we don't have to stray of plugin-centric logic
 //todo: allow config to export a function which returns a promise to allow for restart functionality
-module.exports = config();
+module.exports = config;

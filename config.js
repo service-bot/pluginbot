@@ -35,6 +35,9 @@ module.exports = {
     },
     async buildServerConfig(configPath){
         let config = await require(configPath);
+        if (typeof config === "function") {
+            config = await config();
+        }
         let pluginConfigs = config.plugins;
         let serverConfigs = pluginConfigs.reduce((acc, plugin) => {
             let pluginPackage = this.getPluginPackage(configPath, plugin)
