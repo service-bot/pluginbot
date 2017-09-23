@@ -103,7 +103,6 @@ class PluginbotBase {
             let rootSaga = {};
             let pluginsStartedSaga = {}
             let channels = {};
-            console.log("PL");
             for (let [pluginName, plugin] of Object.entries(this.plugins)) {
                 let pluginChannels = {};
                 if(plugin.pkgPart.consumes){
@@ -122,14 +121,12 @@ class PluginbotBase {
                     return enablePlugin;
 
                 };
-                console.log("HERR!");
                 rootSaga[pluginName] = pluginSaga;
                 channels[pluginName] = all(pluginChannels);
 
                 pluginsStartedSaga[pluginName] = take(Plugin.pluginEnabledPattern(pluginName));
 
             }
-            console.log("DONE HER!");
             //saga to initialize all plugins
             sagaMiddleware.run(function* () {
 

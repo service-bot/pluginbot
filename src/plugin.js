@@ -22,12 +22,11 @@ class Plugin {
     }
 
 
-    constructor(plugin, pluginPackage, pluginConfig, pluginPackagePart, imports={}){
+    constructor(plugin, pluginPackage, pluginConfig, pluginPackagePart){
         this.name = pluginPackage.name;
         this.pkg = pluginPackage;
         this.plugin = plugin;
         this.config = pluginConfig;
-        this.imports = imports;
         this.pkgPart = pluginPackagePart;
 
 
@@ -44,7 +43,7 @@ class Plugin {
     }
 
     provide(services){
-
+        console.log("Providing serv!");
         return call(Plugin.provideServices, services, this)
     }
 
@@ -73,61 +72,12 @@ class Plugin {
 
 
     *enable(channels){
-        // if(this.plugin.start) {
-        //     this.services = yield call(this.plugin.start, this.config, this.imports);
-        // }
         yield put(enablePlugin(this));
-        console.log("STARTED PLUGIN! " + this.name);
-        // yield call(Plugin.provideServices, this.services, this);
+        console.log("STARTED PLUGIN " + this.name, this.plugin);
         if(this.plugin.run) {
             let run = yield fork(this.plugin.run, this.config, this.provide, channels);
         }
     }
-
-
-
-    // *initialize(){
-    //     let channels = {}
-    //
-    //     //build channels to consume.
-    //     if(this.pkgPart.consumes) {
-    //         for (let serviceToConsume of this.pkgPart.consumes) {
-    //             channels[serviceToConsume] = yield actionChannel(Plugin.serviceProvidedPattern(serviceToConsume));
-    //         }
-    //     }
-    //     this.channels = channels;
-    //     let imports = {};
-    //     let dependencyEffects = {}
-    //     let dependencyChannel = {};
-    //
-    //     if(this.pkgPart.requires && this.pkgPart.requires.length > 0){
-    //         for(let dependency of this.pkgPart.requires){
-    //             dependencyEffects[dependency] = take(yield actionChannel(Plugin.pluginEnabledPattern(dependency)));
-    //         }
-    //         console.log(this.name, " Dependencies to wait for: ", this.pkgPart.requires);
-    //         let dependencies = yield all(dependencyEffects);
-    //
-    //         for(let [key, value] of Object.entries(dependencies)){
-    //             imports[key] = value.plugin;
-    //         }
-    //
-    //     }else{
-    //         yield take("START_PLUGINBOT");
-    //     }
-    //
-    //     yield call(this.enable.bind(this), channels);
-    //
-    //
-    //     return this;
-    // }
-
-
-
-
-
-
-
-
 
 }
 module.exports = Plugin;
