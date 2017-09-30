@@ -1,10 +1,6 @@
 let {take, put, actionChannel, all, call} = require("redux-saga/effects");
 const GeneratorFunction = (function*(){}).constructor;
 
-function consume(channel){
-    return call(serviceConsumer, channel)
-
-}
 
 function* serviceConsumer(channel){
     console.log(channel);
@@ -15,4 +11,12 @@ function* serviceConsumer(channel){
     return action.service;
 }
 
-module.exports=consume;
+
+let consume = function(channel, options){
+    return call(serviceConsumer, channel)
+
+}
+
+
+
+    module.exports=consume;

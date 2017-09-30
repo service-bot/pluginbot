@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom'
-import consume from "pluginbot-react/src/consume";
+import consume from "../pluginbot-react/src/consume";
 
 
 const MenuItem = function(props){

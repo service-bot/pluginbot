@@ -13,6 +13,7 @@ let pattern = function(serviceType) {
 };
 
 class PluginbotBase {
+
     /**
      *
      * @param plugins - A hash table of Plugin Name : Plugin Object - usually built by wrapper classes.
@@ -23,6 +24,7 @@ class PluginbotBase {
         this.plugins = plugins;
         this.serviceChannels = {};
         this.config = config;
+        this.tasks = [];
 
     }
 
@@ -64,7 +66,7 @@ class PluginbotBase {
 
             let initialState = {
                 plugins: {},
-                services: {}
+                services: {},
             };
 
 
@@ -97,7 +99,9 @@ class PluginbotBase {
 
             this.sagaMiddleware = sagaMiddleware;
             this.store = createStore(initialReducer, applyMiddleware(...middleware, sagaMiddleware));
-            this.runSaga = sagaMiddleware.run;
+            this.runSaga = function(saga, ...args){
+                self.tasks.push(sagaMiddleware.run(saga, ...args));
+            };
             this.pluginReducers = {};
             this.serviceProviders = {};
             let rootSaga = {};
@@ -128,7 +132,7 @@ class PluginbotBase {
 
             }
             //saga to initialize all plugins
-            sagaMiddleware.run(function* () {
+            this.tasks.push(sagaMiddleware.run(function* () {
 
                 //start buffering  all service channels
                 let allChannels = yield all(channels);
@@ -143,10 +147,10 @@ class PluginbotBase {
                 console.log("plugins running")
                 resolve(self.plugins);
 
-            });
+            }));
 
             //saga to enable plugins after initialization
-            sagaMiddleware.run(function*(){
+            this.tasks.push(sagaMiddleware.run(function*(){
                 yield takeEvery("ENABLE_PLUGIN", function*(action){
                     //start the plugin
                     let channels = yield call(self.buildInitialChannels.bind(self), action.plugin.pkgPart.consumes);
@@ -162,7 +166,7 @@ class PluginbotBase {
                     //todo : do we need this still?
                     action.done(pluginEnabled);
                 })
-            })
+            }))
         })
     }
 
@@ -209,6 +213,7 @@ class PluginbotBase {
         }
     }
 
+
     _enablePlugin(plugin) {
         return new Promise(resolve => {
             if(this.plugins[plugin.name]){
@@ -223,21 +228,6 @@ class PluginbotBase {
             this.store.dispatch({type: "ENABLE_PLUGIN", plugin: plugin, done : resolve});
         })
     }
-
-    buildImports(pluginPkgPart){
-        let self = this;
-        let imports = {};
-        if(pluginPkgPart.requires && pluginPkgPart.requires.length > 0){
-            pluginPkgPart.requires.reduce((acc, requirement) => {
-                acc[requirement] = self.plugins[requirement]
-                if(!acc[requirement]){
-                    throw "import not found!";
-                }
-            }, imports);
-        }
-        return imports;
-    }
-
 }
 
 

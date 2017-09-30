@@ -22,12 +22,13 @@ class Plugin {
     }
 
 
-    constructor(plugin, pluginPackage, pluginConfig, pluginPackagePart){
+    constructor(plugin, pluginPackage, pluginConfig, pluginPackagePart, store){
         this.name = pluginPackage.name;
         this.pkg = pluginPackage;
         this.plugin = plugin;
         this.config = pluginConfig;
         this.pkgPart = pluginPackagePart;
+        this.store = store;
 
 
     }

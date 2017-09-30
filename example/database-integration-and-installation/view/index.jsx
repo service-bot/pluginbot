@@ -1,6 +1,6 @@
 import React from 'react';
 import {render} from 'react-dom';
-import PluginBotClient from "pluginbot-react";
+import PluginBotClient from "../pluginbot-react";
 // import PluginbotProvider from "../../../src/provider.js";
 import PluginbotProvider from "pluginbot-react/src/provider"
 import ReactDOM from 'react-dom'

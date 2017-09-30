@@ -1,7 +1,7 @@
 import React from 'react';
 import {render} from 'react-dom';
 import { Router, Route } from 'react-router';
-import consume from "pluginbot-react/src/consume";
+import consume from "../pluginbot-react/src/consume";
 import Home from "./home.jsx"
 import {TopNavigation} from "./top-nav.jsx";
 import createBrowserHistory from 'history/createBrowserHistory'

@@ -1,6 +1,6 @@
 {
   "name": "pluginbot",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "repository": {
     "type": "git",
     "url": "http://github.com/service-bot/pluginbot.git"
@@ -11,5 +11,5 @@
     "redux": "^3.7.2",
     "redux-saga": "^0.15.6"
   },
-  "keywords" : ["plugin", "dependency-inection", "framework"]
+  "keywords" : ["plugin", "dependency-inection", "framework", "soa", "universal"]
 }

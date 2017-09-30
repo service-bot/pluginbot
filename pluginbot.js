@@ -46,7 +46,7 @@ class Pluginbot extends PluginbotBase {
 
     enablePlugin(pluginPath, config){
             let {plugin, pluginPkgPart, pluginPkg, pluginName} = Pluginbot.buildPlugin(pluginPath);
-            return this._enablePlugin(new Plugin(plugin, pluginPkg, config, pluginPkgPart, this.buildImports(pluginPkgPart)));
+            return this._enablePlugin(new Plugin(plugin, pluginPkg, config, pluginPkgPart));
     }
     static async createPluginbot(configPath){
         let config = (await configBuilder.buildServerConfig(configPath));
