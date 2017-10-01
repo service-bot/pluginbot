@@ -1,6 +1,6 @@
 {
   "name": "pluginbot",
-  "version": "0.1.12",
+  "version": "0.1.14",
   "repository": {
     "type": "git",
     "url": "http://github.com/service-bot/pluginbot.git"
@@ -11,5 +11,13 @@
     "redux": "^3.7.2",
     "redux-saga": "^0.15.6"
   },
+  "babel" : {
+    "presets" : ["es2015", "react"],
+    "plugins" : ["react-hot-loader/babel", "transform-object-rest-spread",["transform-runtime", {
+      "polyfill": false,
+      "regenerator": true
+    }], "transform-async-to-generator"]
+  },
+
   "keywords" : ["plugin", "dependency-inection", "framework", "soa", "universal"]
 }

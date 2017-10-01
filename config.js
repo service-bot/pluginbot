@@ -50,7 +50,7 @@ module.exports = {
         let serverConfigs = pluginConfigs.reduce((acc, plugin) => {
             let pluginPackage = this.getPluginPackage(configPath, plugin)
             let pluginbot =pluginPackage.pluginbot;
-            if (pluginbot) {
+            if (pluginbot && (pluginbot.server || pluginbot.main)) {
                 let pluginServerPath = path.resolve(configPath, "..", plugin.path, (pluginbot.main || pluginbot.server.main));
                 acc[pluginPackage.name] = {pluginPackage, config : plugin, path: plugin.path}
             }

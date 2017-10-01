@@ -58,5 +58,4 @@ typings/
 .env
 
 build
-.babelrc
 webpack*
