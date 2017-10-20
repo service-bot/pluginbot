@@ -33,19 +33,18 @@ class Plugin {
 
     }
 
-    static *provideServices(services, provider){
+    static *provideServices(services, provider, ephemeral=false){
         for(let [key, value] of Object.entries(services)){
             if(Array.isArray(value)){
-                yield all(value.map(service => put(provideService(key, service, provider))))
+                yield all(value.map(service => put(provideService(key, service, provider, ephemeral))))
             }else {
                 yield put(provideService(key, value, provider));
             }
         }
     }
 
-    provide(services){
-        console.log("Providing serv!");
-        return call(Plugin.provideServices, services, this)
+    provide(services, options={}){
+        return call(Plugin.provideServices, services, this, options.ephemeral)
     }
 
     //todo: do we need  installation configurations?
@@ -63,7 +62,6 @@ class Plugin {
             } else {
                 yield put({type: "PLUGIN_INSTALLED", pluginName: pluginName});
             }
-            console.log("PLUGIN INSTALLED!", pluginName);
             done();
 
         }catch(error){
@@ -74,7 +72,6 @@ class Plugin {
 
     *enable(channels){
         yield put(enablePlugin(this));
-        console.log("STARTED PLUGIN " + this.name, this.plugin);
         if(this.plugin.run) {
             let run = yield fork(this.plugin.run, this.config, this.provide, channels);
         }

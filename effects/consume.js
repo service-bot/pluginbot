@@ -3,7 +3,6 @@ const GeneratorFunction = (function*(){}).constructor;
 
 
 function* serviceConsumer(channel){
-    console.log(channel);
     if(channel instanceof GeneratorFunction){
         channel = yield call(channel);
     }

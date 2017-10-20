@@ -11,7 +11,6 @@ module.exports = {
         if(typeof config === "function"){
             config = await config();
         }
-        console.log(config, "CONFIG!");
         let pluginConfigs = config.plugins;
         let clientConfigs = pluginConfigs.reduce((acc, plugin) => {
             let pluginPackage = this.getPluginPackage(configPath, plugin)

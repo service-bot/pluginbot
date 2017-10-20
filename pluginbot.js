@@ -37,7 +37,6 @@ class Pluginbot extends PluginbotBase {
                 return resolve("plugin " + pluginName + " already enabled");
             }
             // let imports = this.buildImports(pluginPkgPart);
-            console.log("INSTALLING PLUGIN: ", pluginName);
 
             //todo : switch this to thunk instead of callback?
             this.runSaga(this._install.bind(this), plugin, pluginName, callback);

@@ -78,6 +78,10 @@ class PluginbotBase {
                         return state;
                     case "SERVICE_PROVIDED" :
                         let services = state.services[action.serviceType];
+                        //ephemeral services don't stay in store.
+                        if(action.ephemeral){
+                            return state;
+                        }
                         if (services) {
                             services.push(action.service);
                         } else {
@@ -119,9 +123,7 @@ class PluginbotBase {
                 }
 
                 let pluginSaga = function*(consumptionChannels){
-                    console.log("PLUGIN SAGA!");
                     let enablePlugin = yield call(plugin.enable.bind(plugin), consumptionChannels);
-                    console.log("plugin done?");
                     return enablePlugin;
 
                 };
@@ -140,11 +142,9 @@ class PluginbotBase {
 
                 //start enabling all plugins
                 for(let [pluginName, pluginSaga] of Object.entries(rootSaga)){
-                    console.log(pluginName, pluginSaga)
                     pluginTasks[pluginName] = yield fork(pluginSaga, allChannels[pluginName]);
                 }
 
-                console.log("plugins running")
                 resolve(self.plugins);
 
             }));
@@ -167,6 +167,18 @@ class PluginbotBase {
                     action.done(pluginEnabled);
                 })
             }))
+
+            // this.tasks.push(sagaMiddleware.run(function*(){
+            //     yield takeEvery("INSTALL_PLUGIN", function*(action){
+            //         let plugin = action.plugin;
+            //         if(self.plugins[plugin.pluginName]){
+            //             console.error("Plugin " + plugin.name + " is already installed + enabled");
+            //
+            //         }else{
+            //             yield call(self._install.bind(self), plugin.plugin, plugin.pluginName)
+            //         }
+            //     })
+            // }))
         })
     }
 
@@ -190,9 +202,11 @@ class PluginbotBase {
         return (new Proxy({}, channelHandler));
     }
 
-    *_install(pluginFunctions, pluginName, done){
+    //todo: take in plugin object instead of parts .
+    //todo: stop using done?
+    *_install(pluginFunctions, pluginName, done=()=>{}){
         if(this.plugins[pluginName]){
-            console.error("plugin already enabled");
+            console.error("plugin already installed and enabled");
             done();
         }
         try {
@@ -201,12 +215,10 @@ class PluginbotBase {
 
 
                 yield call(this.config.install.bind(this), this._getLazyChannels() , pluginName, pluginFunctions.install);
-                console.log("configured install donner!");
             } else if(pluginFunctions.install) {
                 yield call(pluginFunctions.install);
             }
             yield put({type: "PLUGIN_INSTALLED", pluginName: pluginName});
-            console.log("PLUGIN INSTALLED!", pluginName);
             done();
         }catch(error){
             done(error);
