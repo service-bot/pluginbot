@@ -1,6 +1,6 @@
 {
   "name": "pluginbot",
-  "version": "0.2.0",
+  "version": "0.2.3",
   "repository": {
     "type": "git",
     "url": "http://github.com/service-bot/pluginbot.git"

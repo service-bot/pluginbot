@@ -1,6 +1,7 @@
 let path = require("path");
 let {createStore, combineReducers, applyMiddleware} = require("redux");
 let saga = require("redux-saga");
+let {buffers} = require('redux-saga');
 let {take, put, actionChannel, all, call, fork, takeEvery, flush, select} = require("redux-saga/effects");
 let Plugin = require("./plugin");
 let {provideService} = require("../actions");
@@ -116,7 +117,7 @@ class PluginbotBase {
                 if(plugin.pkgPart.consumes){
                     plugin.pkgPart.consumes.reduce((acc, serviceToConsume) => {
                         if(!acc[serviceToConsume]){
-                            pluginChannels[serviceToConsume] = actionChannel(Plugin.serviceProvidedPattern(serviceToConsume))
+                            pluginChannels[serviceToConsume] = actionChannel(Plugin.serviceProvidedPattern(serviceToConsume), buffers.expanding());
                         }
                         return acc;
                     }, pluginChannels);

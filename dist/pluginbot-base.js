@@ -31,21 +31,24 @@ var _require = require("redux"),
 
 var saga = require("redux-saga");
 
-var _require2 = require("redux-saga/effects"),
-    take = _require2.take,
-    put = _require2.put,
-    actionChannel = _require2.actionChannel,
-    all = _require2.all,
-    call = _require2.call,
-    fork = _require2.fork,
-    takeEvery = _require2.takeEvery,
-    flush = _require2.flush,
-    select = _require2.select;
+var _require2 = require('redux-saga'),
+    buffers = _require2.buffers;
+
+var _require3 = require("redux-saga/effects"),
+    take = _require3.take,
+    put = _require3.put,
+    actionChannel = _require3.actionChannel,
+    all = _require3.all,
+    call = _require3.call,
+    fork = _require3.fork,
+    takeEvery = _require3.takeEvery,
+    flush = _require3.flush,
+    select = _require3.select;
 
 var Plugin = require("./plugin");
 
-var _require3 = require("../actions"),
-    provideService = _require3.provideService;
+var _require4 = require("../actions"),
+    provideService = _require4.provideService;
 
 var consumptionChannel = require("../effects/consumptionChannel");
 var pattern = function pattern(serviceType) {
@@ -284,7 +287,7 @@ var PluginbotBase = function () {
                         if (plugin.pkgPart.consumes) {
                             plugin.pkgPart.consumes.reduce(function (acc, serviceToConsume) {
                                 if (!acc[serviceToConsume]) {
-                                    pluginChannels[serviceToConsume] = actionChannel(Plugin.serviceProvidedPattern(serviceToConsume));
+                                    pluginChannels[serviceToConsume] = actionChannel(Plugin.serviceProvidedPattern(serviceToConsume), buffers.expanding());
                                 }
                                 return acc;
                             }, pluginChannels);
